@@ -7,10 +7,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Main {
+    private static final String basePath = "/Users/AleBarbieri/Documents/FIAP/OCR";
+
     public static void main(String[] args){
         boolean convertToGrayscale = true;
 
-        File image = new File("/Users/AleBarbieri/Documents/FIAP/OCR/cupom-fiscal-5.jpg");
+        File image = new File(basePath + "/cupom-fiscal-5.jpg");
         Tesseract tess4j = new Tesseract();
         tess4j.setLanguage("por");
         tess4j.setDatapath("/usr/local/Cellar/tesseract-lang/4.1.0/share/tessdata");
@@ -42,14 +44,14 @@ public class Main {
             }
         }
 
-        File output = new File("/Users/AleBarbieri/Documents/FIAP/OCR/grayscale/" + originalImage.getName());
+        File output = new File(basePath + "/grayscale/" + originalImage.getName());
         ImageIO.write(image, originalImage.getName().split("\\.")[1], output);
         return output;
     }
 
     private static File convertImageToGrayscaleWithImageHelper(File originalImage) throws Exception {
         BufferedImage newImage = ImageHelper.convertImageToGrayscale(ImageIO.read(originalImage));
-        File output = new File("/Users/AleBarbieri/Documents/FIAP/OCR/grayscale/" + originalImage.getName());
+        File output = new File(basePath + "/grayscale/" + originalImage.getName());
         ImageIO.write(newImage, originalImage.getName().split("\\.")[1], output);
         return output;
     }
