@@ -7,21 +7,32 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Main {
-    private static final String basePath = "/Users/AleBarbieri/Documents/FIAP/OCR";
+    private static final String basePath = "C:\\_temp\\fiap";
+    private static final String grayscalePath = basePath + "\\grayscale\\";
+    private static final String tesseractPath = "C:\\Users\\DCS0320\\AppData\\Local\\Programs\\Tesseract-OCR\\tessdata";
 
     public static void main(String[] args){
+        var listaImagens = new String[] { basePath + "\\cupom01.jpg", basePath + "\\cupom02.jpg", basePath + "\\cupom03.jpg" };
+        for(var caminhoImagem : listaImagens){
+            var cupomFiscal = carregarCupomFiscal(caminhoImagem);
+            if (cupomFiscal != null)
+                System.out.println(cupomFiscal);
+        }
+    }
+
+    private static CupomFiscal carregarCupomFiscal(String imagePath){
         boolean convertToGrayscale = true;
 
-        File image = new File(basePath + "/cupom-fiscal-5.jpg");
+        File image = new File(imagePath);
         Tesseract tess4j = new Tesseract();
         tess4j.setLanguage("por");
-        tess4j.setDatapath("/usr/local/Cellar/tesseract-lang/4.1.0/share/tessdata");
+        tess4j.setDatapath(tesseractPath);
 
         try {
             String result = tess4j.doOCR(convertToGrayscale ? convertImageToGrayscale(image) : image);
-            System.out.println("Resultado OCR:\n\n" + result);
+            return CupomFiscalParser.parseConteudoOCR(result);
         } catch (Exception e){
-            System.out.println(e.getMessage());
+            return null;
         }
     }
 
@@ -44,14 +55,14 @@ public class Main {
             }
         }
 
-        File output = new File(basePath + "/grayscale/" + originalImage.getName());
+        File output = new File(grayscalePath + originalImage.getName());
         ImageIO.write(image, originalImage.getName().split("\\.")[1], output);
         return output;
     }
 
     private static File convertImageToGrayscaleWithImageHelper(File originalImage) throws Exception {
         BufferedImage newImage = ImageHelper.convertImageToGrayscale(ImageIO.read(originalImage));
-        File output = new File(basePath + "/grayscale/" + originalImage.getName());
+        File output = new File(grayscalePath + originalImage.getName());
         ImageIO.write(newImage, originalImage.getName().split("\\.")[1], output);
         return output;
     }
