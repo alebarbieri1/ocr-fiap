@@ -35,6 +35,8 @@ public class CupomFiscal {
                     "\tDESCRIÇÃO:" + itens[i].getDescricao() + "\n" +
                     "\tVALOR UNITÁRIO:" + itens[i].getValorUnitario() + "\n" +
                     "\tQUANTIDADE:" + itens[i].getQuantidade() + "\n";
+            if (i < (itens.length - 1))
+                s += "\n";
         }
 
         s +=

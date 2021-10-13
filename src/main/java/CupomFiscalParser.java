@@ -34,8 +34,10 @@ public class CupomFiscalParser {
     private static void carregarEndereco(CupomFiscal cupomFiscal, ContentReader reader){
         cupomFiscal.setEnderecoLinha1(reader.lerProximaLinha());
         var linha2 = reader.lerLinhaAtual();
-        if (!isLinhaCnpj(linha2))
+        if (!isLinhaCnpj(linha2)) {
             cupomFiscal.setEnderecoLinha2(linha2);
+            reader.proximaLinha();
+        }
     }
 
     private static void carregarCnpj(CupomFiscal cupomFiscal, ContentReader reader){
@@ -59,7 +61,7 @@ public class CupomFiscalParser {
 
     private static void carregarIe(CupomFiscal cupomFiscal, ContentReader reader){
         var linha = reader.lerLinhaAtual();
-        if (linha == null || !linha.toUpperCase().contains("IE") || !linha.toUpperCase().contains("1E"))
+        if (linha == null || !(linha.toUpperCase().contains("IE") || linha.toUpperCase().contains("1E")))
             return;
 
         cupomFiscal.setIe(obterValor(linha, ":"));
