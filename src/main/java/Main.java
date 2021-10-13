@@ -27,6 +27,7 @@ public class Main {
         Tesseract tess4j = new Tesseract();
         tess4j.setLanguage("por");
         tess4j.setDatapath(tesseractPath);
+        tess4j.setTessVariable("user_defined_dpi", "300");
 
         try {
             String result = tess4j.doOCR(convertToGrayscale ? convertImageToGrayscale(image) : image);
