@@ -121,7 +121,7 @@ public class CupomFiscalParser {
             if (dados.length >= 2)
                 item.setCodigo(dados[1].trim());
             if (dados.length >= 3)
-                item.setDescricao(dados[2].trim());
+                item.setDescricao(linha1.substring(linha1.indexOf(dados[2])).trim());
 
             dados = Arrays.stream(linha2.toUpperCase().split("X")).filter(x -> !x.isEmpty()).toArray(String[]::new);
             if (dados.length >= 1)
