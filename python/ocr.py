@@ -1,7 +1,7 @@
 import argparse
 from re import I
 from ocr_results_parser import OcrResultsParser
-from ocr_engine import generate_image_preset_configurations, ocr, example
+from ocr_engine import generate_image_preset_configurations, ocr, example, retrieve_box_position
 import sys
 
 def parse_detections_results(detections):
@@ -19,6 +19,9 @@ def verbose_print(msg, verbose):
 def run_example():
   example()
 
+def run_interactive_roi_selection(image_path):
+  retrieve_box_position(image_path)
+
 def main():
   # construct the argument parser and parse the arguments
   ap = argparse.ArgumentParser()
@@ -35,6 +38,8 @@ def main():
                         help="Verbose mode")
   ap.add_argument("-s", "--save-raw-ocr-results", required = False, 
                         help = "Save raw ocr results in a temporary file for debugging purposes")
+  ap.add_argument('--select-roi-interactive-mode', type=bool, nargs='?',
+                          const=True, default=False, help = 'Select Region of Interest (ROI) of a image interactively')
 
   args = vars(ap.parse_args())
 
@@ -46,6 +51,10 @@ def main():
     ap.print_help()
     return
   
+  if args['select_roi_interactive_mode']:
+    run_interactive_roi_selection(args["image"])
+    return
+
   debug = args["debug"]
   verbose = args["verbose"]
   
