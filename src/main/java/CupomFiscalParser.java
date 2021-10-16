@@ -209,7 +209,7 @@ public class CupomFiscalParser {
     }
 
     private static boolean isFimItens(String s){
-        return s != null && s.toUpperCase().contains("TOTAL") || s.toUpperCase().contains("DESCONTO");
+        return (s != null && s.toUpperCase().contains("TOTAL")) || (s != null && s.toUpperCase().contains("DESCONTO"));
     }
 
     private static boolean isItem(String s){

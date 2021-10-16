@@ -27,16 +27,18 @@ public class CupomFiscal {
             "CCF = " + ccf + "\n" +
             "COO = " + coo + "\n";
 
-        for(int i = 0; i < itens.length; i++){
-            s +=
-                    "\tITEM #" + (i + 1) + "\n" +
-                    "\tNÚMERO: " + itens[i].getNumero() + "\n" +
-                    "\tCÓDIGO: " + itens[i].getCodigo() + "\n" +
-                    "\tDESCRIÇÃO: " + itens[i].getDescricao() + "\n" +
-                    "\tVALOR UNITÁRIO: " + itens[i].getValorUnitario() + "\n" +
-                    "\tQUANTIDADE: " + itens[i].getQuantidade() + "\n";
-            if (i < (itens.length - 1))
-                s += "\n";
+        if (itens != null){
+            for(int i = 0; i < itens.length; i++){
+                s +=
+                        "\tITEM #" + (i + 1) + "\n" +
+                                "\tNÚMERO: " + itens[i].getNumero() + "\n" +
+                                "\tCÓDIGO: " + itens[i].getCodigo() + "\n" +
+                                "\tDESCRIÇÃO: " + itens[i].getDescricao() + "\n" +
+                                "\tVALOR UNITÁRIO: " + itens[i].getValorUnitario() + "\n" +
+                                "\tQUANTIDADE: " + itens[i].getQuantidade() + "\n";
+                if (i < (itens.length - 1))
+                    s += "\n";
+            }
         }
 
         s +=
