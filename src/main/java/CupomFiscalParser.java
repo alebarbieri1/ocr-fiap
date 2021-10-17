@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class CupomFiscalParser {
     public static CupomFiscal parseConteudoOCR(String conteudo){
@@ -197,7 +198,14 @@ public class CupomFiscalParser {
     }
 
     private static boolean isLinhaCnpj(String linha){
-        return linha != null && linha.toUpperCase().contains("CNPJ");
+        if(linha == null)
+            return false;
+        
+        if(linha.toUpperCase().contains("CNPJ"))
+            return true;
+        
+        Pattern pattern = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}");
+        return pattern.matcher(linha).find();
     }
 
     private static boolean isData(String s){
