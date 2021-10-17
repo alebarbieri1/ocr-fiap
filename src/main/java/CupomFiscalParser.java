@@ -191,7 +191,7 @@ public class CupomFiscalParser {
 
     private static String lerTotalizador(ContentReader reader, String id){
         var linha = reader.lerLinhaAtual();
-        if (linha == null || !linha.toUpperCase().contains(id))
+        if (linha == null || !linha.toUpperCase().contains(id) || !contemPalavraSimilar(linha, id, 0.9))
             return null;
 
         reader.proximaLinha();
@@ -223,7 +223,13 @@ public class CupomFiscalParser {
     }
 
     private static boolean isFimItens(String s){
-        return (s != null && s.toUpperCase().contains("TOTAL")) || (s != null && s.toUpperCase().contains("DESCONTO"));
+        if (s == null)
+            return false;
+        
+        if ((s.toUpperCase().contains("TOTAL")) || (s != null && s.toUpperCase().contains("DESCONTO")))
+            return true;
+
+        return (contemPalavraSimilar(s, "total", 0.9) || contemPalavraSimilar(s, "desconto", 0.9));
     }
 
     private static boolean isItem(String s){
