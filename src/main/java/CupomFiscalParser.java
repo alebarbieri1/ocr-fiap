@@ -2,6 +2,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import net.ricecode.similarity.JaroWinklerStrategy;
+import net.ricecode.similarity.SimilarityStrategy;
+import net.ricecode.similarity.StringSimilarityService;
+import net.ricecode.similarity.StringSimilarityServiceImpl;
+import java.text.Normalizer;
+
 public class CupomFiscalParser {
     public static CupomFiscal parseConteudoOCR(String conteudo){
         if (conteudo == null || conteudo.isEmpty())
@@ -222,5 +228,29 @@ public class CupomFiscalParser {
 
     private static boolean isItem(String s){
         return s != null && s.substring(0, 3).chars().allMatch(Character::isDigit);
+    }
+
+    private static boolean contemPalavraSimilar(String string, String palavraAPesquisar, double limiarMinimo){
+        if(palavraAPesquisar == null || string == null)
+            return false;
+        
+        SimilarityStrategy strategy = new JaroWinklerStrategy();
+        StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
+        String stringTratada = tratarString(string);
+        String palavraTratada = tratarString(palavraAPesquisar);
+
+        for(String palavra : stringTratada.split(" ")){
+            if(service.score(palavra, palavraTratada) > limiarMinimo)
+            return true;
+        }
+        return false;
+    }
+
+    public static String tratarString(String s){
+        return Normalizer.normalize(s, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+            .toLowerCase()
+            .replaceAll("\\s+", " ")
+            .trim();
     }
 }
