@@ -1,17 +1,31 @@
 # README
 
+## OCR BFG - The Big Fu**ing Gun of the OCR!
 
-## Pré-requisitos
-* Python 3.9 ou superior
-* Pip 20.2.3 ou superior
-* Sugiro a utilização de ambientes virtuals (Virtual Env). Mais informações [aqui](https://virtualenv.pypa.io/en/latest/)
-* Veja as dependências de pacotes no arquivo `requirements.txt`. Mais detalhes [aqui](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+There's no standard presetting that makes all input images work when we talk about OCR. We could try to analyze each individual image against its attributes and apply some specific presets. 
 
+This project is an attempt of trying **all the presets as possible**. And combine them all into one good OCR response (we're still in an early stage, trying only a few presets, but for a small POC, it's OK).
 
-## Para fazer o OCR com múltiplas configurações pré-definidas (para capturar o máximo de informações)
+## System Requirements
+* Python 3.9 or later
+* Pip 20.2.3 or later
+* I heavily suggest the usage of virtual environents (Virtual Env). [More info here](https://virtualenv.pypa.io/en/latest/)
+* Check the dependecies in the `requirements.txt`. [Installation and more info here](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+
+## Usage 
+
+### Checking the arguments - displaying the help 
+```bash
+$ python ocr.py
+
+usage: ocr.py [-h] [--run-manually-labeled-example [RUN_MANUALLY_LABELED_EXAMPLE]] [-i IMAGE] [--debug [DEBUG]] [--verbose [VERBOSE]]  [-s SAVE_RAW_OCR_RESULTS] [--select-roi-interactive-mode [SELECT_ROI_INTERACTIVE_MODE]]
+```
+Check in your console for full help
+
+### Trying to OCR an image
 ```python
-python ocr.py  -i 'url da imagem'
-# Exemplo de retorno (ainda é um array, veja na lista de pendências abaixo) 
+python ocr.py  -i 'image path '
+# Response example
 # [
 #  {
 #    'nome': '',
@@ -24,13 +38,13 @@ python ocr.py  -i 'url da imagem'
 ```
 
 
-## Para fazer apenas o parse do resultado de uma ferramenta OCR 
-O parser assume que o input é a string completa de uma nota fiscal inteira.   
-Ele irá buscar as informações com base em expressões regulares e comparações similares ([veja a biblioteca `thefuzz`](https://github.com/seatgeek/thefuzz)).  
+### Parsing a third party OCR result
+Our parser assumes that the string input is a **full invoice string**. Our parser will search for the information by looking at regular expressions and similar comparisons ([see the `thefuzz` libray that we use internally](https://github.com/seatgeek/thefuzz))
+
 
 ```python
-python parse_results.py  -s 'string retornada pelo motor OCR'
-# Exemplo de retorno
+python parse_results.py  -s 'full invoice string '
+# Response example
 # {
 #   'nome': '',
 #   'cnpj': '',
@@ -40,9 +54,25 @@ python parse_results.py  -s 'string retornada pelo motor OCR'
 # }
 ```
 
+## Run an example
 
-# O que ainda precisa ser feito
- * O resultado retornado dos scripts deve ter um formato universal (ex: JSON)
- * O resultado do script `ocr.py` ainda está retornando um array de todas as pré definições. Estes devem ser combinados para retornar a união de todas as passagens pelo OCR, descartando valores inválidos
- * O parser ainda considera poucas variações de nota fiscal. 
- * O nome do cliente ainda precisa ser parseado - Só consegue identificar quando o cliente não foi informado. Ainda não sabe extrair a informação quando um cliente foi identificado no ato da compra
+There's an example of parsing an invoice by manually labelling each ROI of the image. To run, type
+
+```python
+python ocr.py --run-manually-labeled-example
+```
+
+## Run an interactive ROI detection
+
+You can also run a script to detect the ROI of an image
+
+```python
+python ocr.py --select-roi-interactive-mode --i 'url image'
+```
+
+
+# TODO list
+ * The script response should be in a standardized manner (e.g, JSON)
+ * The script `ocr.py` is still returning an array of all the presets. It should be combined into oly one response, discarding all the invalid results
+ * The parser it still looking at a few invoices variations.
+ * The customer's name it still nees to be parsed (It only detects if the customer wasn't verified).
