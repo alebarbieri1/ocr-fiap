@@ -31,9 +31,7 @@ def retrieve_box_position(image_path):
                 )
             elif contador==1:
                 ponto2= int(x // escala), int(y // escala)
-                type = input('Informe o tipo de dado: ')
-                name = input('Informa o nome: ')
-                meusPontos.append([ponto1, ponto2, type, name])
+                meusPontos.append([ponto1, ponto2])
                 contador=0
                 notification.notify(
                     title = notification_title,
