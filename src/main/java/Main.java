@@ -109,6 +109,9 @@ public class Main {
     }
 
     private static File writeEnhancedImage(BufferedImage enhancedImage, String fileName) throws Exception {
+        File dir = new File(enhancedPath);
+        if (!dir.exists())
+            dir.mkdirs();
         File newFile = new File(enhancedPath + fileName);
         String imageFormat = fileName.split("\\.")[1];
         ImageIO.write(enhancedImage, imageFormat, newFile);
