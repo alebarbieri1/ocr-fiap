@@ -1,5 +1,12 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Pattern;
+
+import net.ricecode.similarity.JaroWinklerStrategy;
+import net.ricecode.similarity.SimilarityStrategy;
+import net.ricecode.similarity.StringSimilarityService;
+import net.ricecode.similarity.StringSimilarityServiceImpl;
+import java.text.Normalizer;
 
 public class CupomFiscalParser {
     public static CupomFiscal parseConteudoOCR(String conteudo){
@@ -184,7 +191,7 @@ public class CupomFiscalParser {
 
     private static String lerTotalizador(ContentReader reader, String id){
         var linha = reader.lerLinhaAtual();
-        if (linha == null || !linha.toUpperCase().contains(id))
+        if (linha == null || !linha.toUpperCase().contains(id) || !contemPalavraSimilar(linha, id, 0.9))
             return null;
 
         reader.proximaLinha();
@@ -197,7 +204,14 @@ public class CupomFiscalParser {
     }
 
     private static boolean isLinhaCnpj(String linha){
-        return linha != null && linha.toUpperCase().contains("CNPJ");
+        if(linha == null)
+            return false;
+        
+        if(linha.toUpperCase().contains("CNPJ"))
+            return true;
+        
+        Pattern pattern = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}");
+        return pattern.matcher(linha).find();
     }
 
     private static boolean isData(String s){
@@ -209,10 +223,40 @@ public class CupomFiscalParser {
     }
 
     private static boolean isFimItens(String s){
-        return (s != null && s.toUpperCase().contains("TOTAL")) || (s != null && s.toUpperCase().contains("DESCONTO"));
+        if (s == null)
+            return false;
+        
+        if ((s.toUpperCase().contains("TOTAL")) || (s != null && s.toUpperCase().contains("DESCONTO")))
+            return true;
+
+        return (contemPalavraSimilar(s, "total", 0.9) || contemPalavraSimilar(s, "desconto", 0.9));
     }
 
     private static boolean isItem(String s){
         return s != null && s.substring(0, 3).chars().allMatch(Character::isDigit);
+    }
+
+    private static boolean contemPalavraSimilar(String string, String palavraAPesquisar, double limiarMinimo){
+        if(palavraAPesquisar == null || string == null)
+            return false;
+        
+        SimilarityStrategy strategy = new JaroWinklerStrategy();
+        StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
+        String stringTratada = tratarString(string);
+        String palavraTratada = tratarString(palavraAPesquisar);
+
+        for(String palavra : stringTratada.split(" ")){
+            if(service.score(palavra, palavraTratada) > limiarMinimo)
+            return true;
+        }
+        return false;
+    }
+
+    public static String tratarString(String s){
+        return Normalizer.normalize(s, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+            .toLowerCase()
+            .replaceAll("\\s+", " ")
+            .trim();
     }
 }
